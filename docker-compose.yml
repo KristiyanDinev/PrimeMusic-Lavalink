@@ -1,0 +1,54 @@
+services:
+  # The Lavalink Server
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    container_name: lavalink
+    restart: always
+    ports:
+      - "2333:2333"
+    environment:
+      - LAVALINK_SERVER_PASSWORD=youshallnotpass
+      - SERVER_PORT=2333
+      - SERVER_ADDRESS=0.0.0.0
+    healthcheck:
+      # Opens a raw TCP socket connection to test if the server is accepting traffic
+      test: ["CMD", "/bin/bash", "-c", "echo > /dev/tcp/localhost/2333"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # The Discord Bot
+  bot:
+    build: .
+    container_name: primemusic-bot
+    restart: always
+    environment:
+      TOKEN: ${SERMON_DISCORD_BOT_TOKEN}
+      LANGUAGE: "en"
+      OWNER_IDS: "636950962245730324,1441688644267282503"
+      MONGODB_URI: ""
+      SPOTIFY_CLIENT_ID: ""
+      SPOTIFY_CLIENT_SECRET: ""
+      SETUP_FILE_PATH: "./commands/setup.json"
+      COMMANDS_DIR: "./commands"
+      EMBED_COLOR: "#1d96e1"
+      CUSTOM_EMOJI: "false"
+      EMOJI_THEME: "redwhite"
+      HELP_BANNER_URL: "https://remnantofgod.org/assets/img/wtpr-main-new.png"
+      ACTIVITY_NAME: "WTPR"
+      ACTIVITY_TYPE: "LISTENING"
+      SUPPORT_SERVER: ""
+      EMBED_TIMEOUT: "5"
+      SHOW_PROGRESS_BAR: "true"
+      SHOW_VISUALIZER: "true"
+      GENERATE_SONG_CARD: "true"
+      METADATA_TAG: "true"
+      LOW_MEMORY_MODE: "true"
+      ERROR_LOG: ""
+      NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"lavalink","port":2333,"secure":false}]'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      lavalink:
+        condition: service_healthy

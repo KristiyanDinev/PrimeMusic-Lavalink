@@ -52,10 +52,10 @@ module.exports = {
             const deferred = await safeDeferReply(interaction);
             if (!deferred && !interaction.deferred && !interaction.replied) return;
 
-            const supportServerLink = "https://discord.gg/xQF9f9yUEM";
-            const githubLink = "https://github.com/GlaceYT";
-            const websiteLink = "https://www.glaceyt.com";
-            const youtubeLink = "https://www.youtube.com/@GlaceYT";
+            const supportServerLink = "";
+            const githubLink = "";
+            const websiteLink = "";
+            const youtubeLink = "";
 
             const buttonRow = new ActionRowBuilder().addComponents(
                 createLinkButton(t.buttons.supportServer, supportServerLink, 'support'),

@@ -70,7 +70,7 @@ module.exports = {
             },
             footer: {
                 version: "**Version 1.4** • Prime Musik-Bot",
-                developer: "Entwickelt von GlaceYT / https://GlaceYT.com"
+                developer: ""
             },
             selectMenu: {
                 placeholder: "📂 Wähle eine Kategorie zum Anzeigen der Befehle...",
@@ -103,7 +103,7 @@ module.exports = {
             },
             footer: {
                 version: "**Version 1.4** • Prime Musik-Bot",
-                developer: "Entwickelt von GlaceYT / https://GlaceYT.com"
+                developer: ""
             },
             buttons: {
                 backToMain: "🏠 Zurück zum Hauptmenü",
@@ -176,7 +176,7 @@ module.exports = {
         },
         footer: {
             version: "**Version 1.4** • Prime Musik-Bot",
-            developer: "Entwickelt von GlaceYT / https://GlaceYT.com"
+            developer: ""
         },
         errors: {
             title: "## ❌ Fehler",
@@ -192,7 +192,7 @@ module.exports = {
         header: {
             title: "# Bot-Statistiken",
             botName: "**{botName}** - Prime Musik-Bot",
-            developer: "Entwickelt von GlaceYT / https://GlaceYT.com"
+            developer: ""
         },
         botInfo: {
             title: "## Bot-Informationen",
@@ -229,7 +229,7 @@ module.exports = {
         },
         footer: {
             version: "**Version 1.4** • Prime Musik-Bot",
-            developer: "Entwickelt von GlaceYT / https://GlaceYT.com"
+            developer: ""
         },
         errors: {
             title: "## ❌ Fehler",
@@ -272,7 +272,7 @@ module.exports = {
         },
         footer: {
             version: "**Version 1.4** • Prime Musik-Bot",
-            developer: "Entwickelt von GlaceYT / https://GlaceYT.com"
+            developer: ""
         },
         buttons: {
             supportServer: "Support-Server",

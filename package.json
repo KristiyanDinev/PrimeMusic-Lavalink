@@ -19,6 +19,6 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "GlaceYT",
+  "author": "PrimeMusic Contributors",
   "license": "MIT License"
 }

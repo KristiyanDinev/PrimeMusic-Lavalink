@@ -1,3 +1,17 @@
+### Download docker image as tar
+
+```bash
+docker save -o primemusic-lavalink-bot.tar primemusic-lavalink-bot:latest
+```
+
+### Load docker image from tar
+
+```bash
+docker load -i primemusic-lavalink-bot.tar
+```
+
+---
+
 <div align="center">
 
 ![Logo](https://i.ibb.co/GfTxbJfC/7-edited.png)

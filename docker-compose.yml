@@ -42,7 +42,7 @@ services:
 
   # The Discord Bot
   sermon:
-    image: primemusic-lavalink-bot
+    build: .
     container_name: sermon_bot
     restart: on-failure
     environment:
@@ -77,7 +77,7 @@ services:
 
   # The Discord Bot
   musicbot:
-    image: primemusic-lavalink-bot
+    build: .
     container_name: music_bot
     restart: on-failure
     environment:

@@ -1,0 +1,9 @@
+node_modules
+.git
+.github
+MusicBot
+*.tar
+*.log
+docker-compose.yml
+README.md
+LICENSE

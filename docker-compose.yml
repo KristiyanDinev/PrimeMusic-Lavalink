@@ -34,6 +34,9 @@ services:
   icecast:
     image: infiniteproject/icecast
     container_name: icecast
+    command: ["icecast", "-c", "/opt/icecast.xml"]
+    volumes:
+      - ./icecast.xml:/opt/icecast.xml:ro
     environment:
       - ICECAST_SOURCE_PASSWORD=youshallnotpass
       - ICECAST_ADMIN_PASSWORD=youshallnotpass

@@ -1,0 +1,38 @@
+<icecast>
+    <hostname>localhost</hostname>
+    <location>Earth</location>
+    <admin>icemaster@localhost</admin>
+    <security>
+        <chroot>0</chroot>
+        <changeowner>
+            <user>icecast</user>
+            <group>icecast</group>
+        </changeowner>
+    </security>
+    <paths>
+        <logdir>/tmp</logdir>
+        <webroot>/usr/share/icecast/web</webroot>
+        <adminroot>/usr/share/icecast/admin</adminroot>
+    </paths>
+    <logging>
+        <accesslog>access.log</accesslog>
+        <errorlog>error.log</errorlog>
+    </logging>
+    <limits>
+        <clients>100</clients>
+        <sources>10</sources> <!-- Increase this to allow multiple mounts -->
+    </limits>
+    <authentication>
+        <source-password>youshallnotpass</source-password>
+        <admin-password>youshallnotpass</admin-password>
+    </authentication>
+    <listen-socket>
+        <port>8000</port>
+    </listen-socket>
+    <!-- Wildcard mount allows any mountpoint to connect -->
+    <mount>
+        <mount-name>/*</mount-name>
+        <username>source</username>
+        <password>youshallnotpass</password>
+    </mount>
+</icecast>

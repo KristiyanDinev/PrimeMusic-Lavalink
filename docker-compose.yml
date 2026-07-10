@@ -31,6 +31,30 @@ services:
     networks:
       - isolated_network
 
+  icecast:
+    image: infiniteproject/icecast
+    container_name: icecast
+    environment:
+      - ICECAST_SOURCE_PASSWORD=youshallnotpass
+      - ICECAST_ADMIN_PASSWORD=youshallnotpass
+    ports:
+      - "8000:8000"
+    networks:
+      - isolated_network
+
+  liquidsoap:
+    image: savonet/liquidsoap:v2.4.5
+    container_name: liquidsoap
+    user: "1000:1000"
+    command: liquidsoap /etc/liquidsoap/radio.liq
+    volumes:
+      - ./playlist:/playlist:ro
+      - ./radio.liq:/etc/liquidsoap/radio.liq:ro
+    depends_on:
+      - icecast
+    networks:
+      - isolated_network
+
   # The VPN Container (Handles the secure connection from your friends)
   tailscale_vpn:
     image: tailscale/tailscale:latest
@@ -107,9 +131,9 @@ services:
       SUPPORT_SERVER: ""
       EMBED_TIMEOUT: "5"
       SHOW_PROGRESS_BAR: "true"
-      SHOW_VISUALIZER: "true"
-      GENERATE_SONG_CARD: "true"
-      METADATA_TAG: "true"
+      SHOW_VISUALIZER: "false"
+      GENERATE_SONG_CARD: "false"
+      METADATA_TAG: "false"
       LOW_MEMORY_MODE: "true"
       ERROR_LOG: ""
       NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"tailscale_vpn","port":2333,"secure":false}]'
@@ -144,9 +168,9 @@ services:
       SUPPORT_SERVER: ""
       EMBED_TIMEOUT: "5"
       SHOW_PROGRESS_BAR: "true"
-      SHOW_VISUALIZER: "true"
-      GENERATE_SONG_CARD: "true"
-      METADATA_TAG: "true"
+      SHOW_VISUALIZER: "false"
+      GENERATE_SONG_CARD: "false"
+      METADATA_TAG: "false"
       LOW_MEMORY_MODE: "true"
       ERROR_LOG: ""
       NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"tailscale_vpn","port":2333,"secure":false}]'
@@ -180,9 +204,9 @@ services:
       SUPPORT_SERVER: ""
       EMBED_TIMEOUT: "5"
       SHOW_PROGRESS_BAR: "true"
-      SHOW_VISUALIZER: "true"
-      GENERATE_SONG_CARD: "true"
-      METADATA_TAG: "true"
+      SHOW_VISUALIZER: "false"
+      GENERATE_SONG_CARD: "false"
+      METADATA_TAG: "false"
       LOW_MEMORY_MODE: "true"
       ERROR_LOG: ""
       NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"tailscale_vpn","port":2333,"secure":false}]'

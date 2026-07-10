@@ -411,6 +411,33 @@ module.exports = {
                 message: "An error occurred while shuffling the queue.\nPlease try again later."
             }
         },
+        loop: {
+            command: {
+                name: "loop",
+                description: "Toggle or set the loop mode (track / queue / off)"
+            },
+            modes: {
+                track: {
+                    title: "## 🔁 Track Loop Enabled",
+                    message: "The current track will now repeat.",
+                    note: "Run `/loop` again to switch to queue loop."
+                },
+                queue: {
+                    title: "## 🔁 Queue Loop Enabled",
+                    message: "The queue will now repeat from the start.",
+                    note: "Run `/loop` again to turn looping off."
+                },
+                none: {
+                    title: "## ❌ Loop Disabled",
+                    message: "Looping has been turned off.",
+                    note: "Run `/loop` again to enable track loop."
+                }
+            },
+            errors: {
+                title: "## ❌ Error",
+                message: "An error occurred while updating the loop mode.\nPlease try again later."
+            }
+        },
         np: {
             command: {
                 name: "np",

@@ -1,8 +1,7 @@
 services:
   # The MongoDB Database
   mongodb:
-    image: mongo:4.4.29
-    platform: linux/amd64
+    image: mongo
     container_name: mongodb
     restart: on-failure
     ports:
@@ -13,36 +12,81 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - isolated_network
+
+  # 1. Internal Server (Serves files to Lavalink using the hostname "playlists")
+  playlists:
+    image: nginx:alpine
+    container_name: playlists
+    restart: on-failure
+    user: root
+    command: /bin/sh -c "sed -i 's/user  nginx;/user  root;/g' /etc/nginx/nginx.conf && nginx -g 'daemon off;'"
+    volumes:
+      - ./playlist:/usr/share/nginx/html:ro
+    networks:
+      - isolated_network
+
+  # The VPN Container (Handles the secure connection from your friends)
+  tailscale_vpn:
+    image: tailscale/tailscale:latest
+    container_name: tailscale_vpn
+    hostname: music-filebrowser
+    ports:
+      - "2333:2333"
+    environment:
+      - TS_STATE_DIR=/var/lib/tailscale
+    volumes:
+      - tailscale_data:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: on-failure
+    networks:
+      - isolated_network
+
+  # 2. Web File Manager (Allows password-protected uploads/deletions via browser)
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: on-failure
+    volumes:
+      - ./playlist:/srv
+      - filebrowser_data:/database
+    network_mode: service:tailscale_vpn
 
   # The Lavalink Server
   lavalink:
     image: ghcr.io/lavalink-devs/lavalink
     container_name: lavalink
     restart: on-failure
-    ports:
-      - "2333:2333"
+    network_mode: service:tailscale_vpn
     environment:
       - LAVALINK_SERVER_PASSWORD=youshallnotpass
       - SERVER_PORT=2333
       - SERVER_ADDRESS=0.0.0.0
+      - LAVALINK_SERVER_SOURCES_YOUTUBE=false
+      - LAVALINK_SERVER_SOURCES_BANDCAMP=false
+      - LAVALINK_SERVER_SOURCES_SOUNDCLOUD=false
+      - LAVALINK_SERVER_SOURCES_TWITCH=false
+      - LAVALINK_SERVER_SOURCES_VIMEO=false
+      - LAVALINK_SERVER_SOURCES_NICO=false
+      - LAVALINK_SERVER_SOURCES_HTTP=true
+      - LAVALINK_SERVER_SOURCES_LOCAL=false
     healthcheck:
-      # Checks Lavalink readiness by calling the authenticated REST endpoint.
-      test:
-        [
-          "CMD-SHELL",
-          "bash -lc 'exec 3<>/dev/tcp/localhost/2333 && printf \"GET /version HTTP/1.1\\r\\nHost: localhost\\r\\nAuthorization: youshallnotpass\\r\\nConnection: close\\r\\n\\r\\n\" >&3 && head -n 1 <&3 | grep -q \"200\"'"
-        ]
+      test: ["CMD", "curl", "-fsS", "-H", "Authorization: youshallnotpass", "http://localhost:2333/version"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  # The Discord Bot
+  # The Discord Bot (Sermon)
   sermon:
-    build: .
+    image: primemusic-bot
     container_name: sermon_bot
     restart: on-failure
     environment:
@@ -68,16 +112,18 @@ services:
       METADATA_TAG: "true"
       LOW_MEMORY_MODE: "true"
       ERROR_LOG: ""
-      NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"lavalink","port":2333,"secure":false}]'
+      NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"tailscale_vpn","port":2333,"secure":false}]'
     depends_on:
       mongodb:
         condition: service_healthy
       lavalink:
         condition: service_healthy
+    networks:
+      - isolated_network
 
-  # The Discord Bot
+  # The Discord Bot (Music)
   musicbot:
-    build: .
+    image: primemusic-bot
     container_name: music_bot
     restart: on-failure
     environment:
@@ -103,13 +149,63 @@ services:
       METADATA_TAG: "true"
       LOW_MEMORY_MODE: "true"
       ERROR_LOG: ""
-      NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"lavalink","port":2333,"secure":false}]'
+      NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"tailscale_vpn","port":2333,"secure":false}]'
     depends_on:
       mongodb:
         condition: service_healthy
       lavalink:
         condition: service_healthy
+    networks:
+      - isolated_network
+  
+  audiobiblebot:
+    image: primemusic-bot
+    container_name: audiobible_bot
+    restart: on-failure
+    environment:
+      TOKEN: ${AUDIOBIBLE_DISCORD_BOT_TOKEN}
+      LANGUAGE: "en"
+      OWNER_IDS: "636950962245730324,1441688644267282503"
+      MONGODB_URI: "mongodb://admin:password@mongodb:27017/PrimeMusicSSRR?authSource=admin"
+      SPOTIFY_CLIENT_ID: ""
+      SPOTIFY_CLIENT_SECRET: ""
+      SETUP_FILE_PATH: "./commands/setup.json"
+      COMMANDS_DIR: "./commands"
+      EMBED_COLOR: "#1d96e1"
+      CUSTOM_EMOJI: "false"
+      EMOJI_THEME: "redwhite"
+      HELP_BANNER_URL: ""
+      ACTIVITY_NAME: "Music"
+      ACTIVITY_TYPE: "LISTENING"
+      SUPPORT_SERVER: ""
+      EMBED_TIMEOUT: "5"
+      SHOW_PROGRESS_BAR: "true"
+      SHOW_VISUALIZER: "true"
+      GENERATE_SONG_CARD: "true"
+      METADATA_TAG: "true"
+      LOW_MEMORY_MODE: "true"
+      ERROR_LOG: ""
+      NODES: '[{"name":"LocalNode","password":"youshallnotpass","host":"tailscale_vpn","port":2333,"secure":false}]'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      lavalink:
+        condition: service_healthy
+    networks:
+      - isolated_network
 
 volumes:
   mongodb_data:
     driver: local
+  filebrowser_data:
+    driver: local
+  tailscale_data:
+    driver: local
+
+networks:
+  isolated_network:
+    driver: bridge
+
+# Audio Bible bot: https://discord.com/oauth2/authorize?client_id=1524764283924385832&permissions=845118570981696&integration_type=0&scope=bot
+# Blessed Music: https://discord.com/oauth2/authorize?client_id=1392081306942312528&permissions=281614566557952&integration_type=0&scope=bot
+# Sermons: https://discord.com/oauth2/authorize?client_id=1399306314491891753&permissions=281614566557952&integration_type=0&scope=bot 

@@ -1,8 +1,8 @@
 # 1. Define the sources
-youversion_bible = playlist(mode="randomize", reload=1, reload_mode="rounds", "/playlist/bible/youversion")
-alex_bible = playlist(mode="randomize", reload=1, reload_mode="rounds", "/playlist/bible/alexander_scourby")
-plain_bible = playlist(mode="randomize", reload=1, reload_mode="rounds", "/playlist/bible/default")
-lullabites = playlist(mode="randomize", reload=1, reload_mode="rounds", "/playlist/lullabites")
+youversion_bible = playlist(mode="randomize", reload=1, reload_mode="watch", "/playlist/bible/youversion")
+alex_bible = playlist(mode="randomize", reload=1, reload_mode="watch", "/playlist/bible/alexander_scourby")
+plain_bible = playlist(mode="randomize", reload=1, reload_mode="watch", "/playlist/bible/default")
+lullabites = playlist(mode="randomize", reload=1, reload_mode="watch", "/playlist/lullabites")
 
 # 2. Make them safe
 youversion_radio = mksafe(youversion_bible)

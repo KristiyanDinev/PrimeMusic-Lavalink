@@ -3,6 +3,7 @@ const { getEmoji } = require('../../UI/emojis/emoji');
 const { autoplayCollection } = require('../../mongodb.js');
 const { getLang } = require('../../utils/languageLoader.js');
 const { handleCommandError, safeDeferReply, buildPaleCard, sanitizeTitle } = require('../../utils/responseHandler.js');
+const { ownerID } = require('../../config.js');
 
 const data = new SlashCommandBuilder()
   .setName("247")
@@ -21,7 +22,10 @@ module.exports = {
             if (!deferred && !interaction.deferred && !interaction.replied) return;
             const lang = await getLang(interaction.guildId);
 
-            if (interaction.guild.ownerId !== interaction.user.id) {
+            const isGuildOwner = interaction.guild.ownerId === interaction.user.id;
+            const isBotOwner = ownerID?.includes(interaction.user.id);
+
+            if (!isGuildOwner && !isBotOwner) {
                 const errorContainer = buildPaleCard(
                     `${getEmoji('error')} ${sanitizeTitle(lang.utility.twentyfourseven.accessDenied.title, 'Access Denied')}`,
                     [lang.utility.twentyfourseven.accessDenied.message]

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const { setGuildLanguage, getGuildLanguage, getAvailableLanguages, getGlobalDefaultLanguage } = require('../../utils/languageLoader');
 const { safeDeferReply, cardFromMessage } = require('../../utils/responseHandler.js');
+const { ownerID } = require('../../config.js');
 
 const data = new SlashCommandBuilder()
   .setName("language")
@@ -43,7 +44,10 @@ module.exports = {
         }, timeout);
       };
 
-      if (interaction.guild.ownerId !== interaction.user.id) {
+      const isGuildOwner = interaction.guild.ownerId === interaction.user.id;
+      const isBotOwner = ownerID?.includes(interaction.user.id);
+
+      if (!isGuildOwner && !isBotOwner) {
         return sendCard("## ❌ Access Denied\n\nYou don't have permission to change the language!\nOnly the server owner can change the bot's language.", 5000, 'Access Denied');
       }
 

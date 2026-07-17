@@ -57,10 +57,11 @@ const defaultNodes = [
   },
 ];
 
+
 module.exports = {
   TOKEN: process.env.TOKEN || "",
   language: process.env.LANGUAGE || "en",
-  ownerID: parseList(process.env.OWNER_IDS || process.env.OWNER_ID, ["636950962245730324", "1441688644267282503"]),
+  ownerID: parseList(process.env.OWNER_IDS),
   mongodbUri: process.env.MONGODB_URI || "",
   spotifyClientId: process.env.SPOTIFY_CLIENT_ID || "",
   spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",

@@ -226,7 +226,7 @@ services:
     container_name: healthylife_bot
     restart: on-failure
     environment:
-      TOKEN: ${HEALTH_DISCORD_BOT_TOKEN}
+      TOKEN: ${HEALTHY_DISCORD_BOT_TOKEN}
       LANGUAGE: "en"
       OWNER_IDS: '["636950962245730324", "1441688644267282503", "1316933612645650505", "1484227086217646140"]'
       MONGODB_URI: "mongodb://admin:password@mongodb:27017/PrimeMusicSSRR?authSource=admin"
@@ -306,8 +306,8 @@ networks:
     driver: bridge
 
 # Audio Bible bot: https://discord.com/oauth2/authorize?client_id=1524764283924385832&permissions=845118570981696&integration_type=0&scope=bot
-# Blessed Music: https://discord.com/oauth2/authorize?client_id=1392081306942312528&permissions=281614566557952&integration_type=0&scope=bot
-# Sermons: https://discord.com/oauth2/authorize?client_id=1399306314491891753&permissions=281614566557952&integration_type=0&scope=bot 
-# Promises bot: https://discord.com/oauth2/authorize?client_id=1363443384957800468&permissions=139586791488&integration_type=0&scope=bot
-# Health bot: https://discord.com/oauth2/authorize?client_id=1527650799583498360&permissions=282168650975488&integration_type=0&scope=bot
-# Audio bot: https://discord.com/oauth2/authorize?client_id=1527418432583237873&permissions=5348718231779648&integration_type=0&scope=bot
+# Blessed Music: https://discord.com/oauth2/authorize?client_id=1392081306942312528&permissions=845118570981696&integration_type=0&scope=bot
+# Sermons: https://discord.com/oauth2/authorize?client_id=1399306314491891753&permissions=845118570981696&integration_type=0&scope=bot 
+# Promises bot: https://discord.com/oauth2/authorize?client_id=1363443384957800468&permissions=845118570981696&integration_type=0&scope=bot
+# Health bot: https://discord.com/oauth2/authorize?client_id=1527650799583498360&permissions=845118570981696&integration_type=0&scope=bot
+# Audio bot: https://discord.com/oauth2/authorize?client_id=1527418432583237873&permissions=845118570981696&integration_type=0&scope=bot
